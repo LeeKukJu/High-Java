@@ -36,6 +36,7 @@ public class EnumHomework {
 		+ (4 * Math.PI * planetArr[i].getRadius() * planetArr[i].getRadius()) + "[㎢]");
 		}
 		
+		System.out.println();
 		System.out.println("----------------------------------------------");
 		for(Planet p : Planet.values()) {
 			System.out.println(p + "의 면적 : " + (4 * Math.PI * p.getRadius() * p.getRadius() + "[㎢]"));
