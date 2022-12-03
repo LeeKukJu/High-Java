@@ -24,7 +24,7 @@ public class SampleVO implements Serializable{
 		this.id = id;
 	}
 
-	public String getName() {
+	public String getName() throws Exception{
 		return name;
 	}
 

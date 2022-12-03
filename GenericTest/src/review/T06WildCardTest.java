@@ -1,21 +1,9 @@
-package kr.or.ddit.basic;
+package review;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class T06WildCardTest {
-	/*
-	 * 와일드 카드에 대하여...
-	 * 
-	 * 와일드카드(?)는 제너릭 타입을 이용한 타입 안전한 코드를 위해 사용되는 특별한 종류의 인수(Argument)로서 변수선언, 객체생성 및
-	 * 메서드 정의할 때 사용된다.(제너릭 타입 선언시에는 사용할 수 없다.)
-	 * 
-	 * <? extends T> => 와일드카드의 상한 제한. T와 그 자손들만 가능 
-	 * <? super T> => 와일드카드의 하한 제한. T와 그 조상들만 가능 
-	 * <?> => 모든 타입이 가능 <? extends Object>와 동일
-	 * 
-	 */
-
 	public static void main(String[] args) {
 
 		FruitBox<Fruit> fruitBox = new FruitBox<>();
@@ -38,7 +26,6 @@ public class T06WildCardTest {
 	}
 }
 
-// 쥬서 클래스
 class Juicer {
 //	static void makeJuice(FruitBox<Fruit> box) {
 //	static <T extends Fruit> void makeJuice(FruitBox<T> box) {
@@ -57,6 +44,39 @@ class Juicer {
 		}
 
 		System.out.println(fruitStr + " => 쥬스 완성!!!");
+	}
+}
+
+class FruitBox<T> {
+
+	private List<T> fruitList;
+
+	public FruitBox() {
+		fruitList = new ArrayList<>();
+	}
+
+	public List<T> getFruitList() {
+		return fruitList;
+	}
+
+	public void add(T fruit) {
+		this.fruitList.add(fruit);
+	}
+}
+
+class Garbage {
+	private String name;
+
+	public Garbage(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
 
@@ -92,44 +112,5 @@ class Grape extends Fruit {
 
 	public Grape() {
 		super("포도");
-	}
-}
-
-class Garbage {
-	private String name;
-
-	public Garbage(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-}
-
-/**
- * 과일 상자
- * 
- * @param <T>
- */
-class FruitBox<T> {
-
-	private List<T> fruitList;
-
-	public FruitBox() {
-		fruitList = new ArrayList<>();
-	}
-
-	public List<T> getFruitList() {
-		return fruitList;
-	}
-
-	public void add(T fruit) {
-		this.fruitList.add(fruit);
 	}
 }

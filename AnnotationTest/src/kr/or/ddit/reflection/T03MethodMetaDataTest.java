@@ -13,7 +13,7 @@ public class T03MethodMetaDataTest {
 	public static void main(String[] args) throws ClassNotFoundException {
 		
 		// Class 객체 생성
-		Class<?> klass = Class.forName("kr.or.ddit.relection.SampleVO");
+		Class<?> klass = Class.forName("kr.or.ddit.reflection.SampleVO");
 		
 		// 클래스에 선언된 모든 메서드의 메타데이터 정보 가져오기
 		Method[] methodArr = klass.getDeclaredMethods();

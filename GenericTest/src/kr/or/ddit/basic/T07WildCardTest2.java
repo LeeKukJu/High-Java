@@ -7,8 +7,6 @@ public class T07WildCardTest2 {
 
 	/**
 	 * 장바구니 항목 조회를 위한 메서드(모든 항목)
-	 * 
-	 * @param cart
 	 */
 	public static void displayCartItemInfo(Cart<?> cart) {
 
@@ -21,7 +19,6 @@ public class T07WildCardTest2 {
 	
 	/**
 	 * 장바구니 항목 조회를 위한 메서드(음료나 그 하위 항목)
-	 * @param cart
 	 */
 	public static void displayCartItemInfo2(Cart<? extends Drink> cart) {
 
@@ -34,7 +31,6 @@ public class T07WildCardTest2 {
 	
 	/**
 	 * 장바구니 항목 조회를 위한 메서드(고기나 그 상위 항목)
-	 * @param cart
 	 */
 	public static void displayCartItemInfo3(Cart<? super Meat> cart) {
 
