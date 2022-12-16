@@ -1,0 +1,1 @@
+2022-12-13 14:57:10.439 [main] DEBUG log4jexam.sql.Query - 쿼리: insert into mymember  (MEM_ID, MEM_NAME, mem_tel, mem_addr, reg_dt)  values (?,?,?,?,sysdate)

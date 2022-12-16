@@ -35,7 +35,7 @@ public class T02FileTest {
 		System.out.println("----------------------------------------------------");
 
 		File f3 = new File("d:/D_Other");
-		File[] files = f3.listFiles();
+		File[] files = f3.listFiles(); // 해당 디렉토리 안에 파일들을 리스트타입으로 반환해줌
 		for (File f : files) {
 			System.out.print(f.getName() + " => ");
 			if (f.isFile()) {

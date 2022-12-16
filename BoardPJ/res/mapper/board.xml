@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardSql">
+
+	<resultMap type="BVO" id="boardMap">
+		<result column="board_no" property="boardNo" />
+		<result column="board_title" property="boardTitle" />
+		<result column="board_writer" property="boardWriter" />
+		<result column="board_date" property="boardDate" />
+		<result column="board_content" property="boardContent" />
+	</resultMap>
+	
+	<insert id="insertBoard" parameterType="board.VO.BoardVO">
+
+		INSERT INTO jdbc_board (board_title, board_writer, board_date,
+		board_content)
+		VALUES ( #{boardTitle}, #{boardWriter}, sysdate, #{boardContent})
+
+	</insert>
+
+	<update id="updateBoard" parameterType="board.VO.BoardVO">
+
+		UPDATE jdbc_board
+		SET board_title = #{boardTitle},
+		board_writer = #{boardWriter},
+		board_content = #{boardContent}
+		WHERE board_no = #{boardNo}
+
+	</update>
+
+	<delete id="deleteBoard" parameterType="int">
+
+		delete from jdbc_board
+		where board_no = #{boardNo}
+
+	</delete>
+
+
+	<select id="checkBoard" parameterType="int" resultType="int">
+
+		select count(*) from jdbc_board
+		where board_no = #{boardNo}
+
+	</select>
+
+	<select id="boardOne" parameterType="int" resultMap="boardMap">
+
+		select * from jdbc_board
+		where board_no = #{boardNo}
+
+	</select>
+	
+	<select id="printAllBoard" resultMap="boardMap">
+	
+		select * from jdbc_board
+		
+	</select>
+	
+	<select id="searchBoard" parameterType="board.VO.BoardVO" resultMap="boardMap">
+		
+		select * from jdbc_board where 1=1
+		
+		<if test="boardNo != 0">
+			and board_no = #{boardNo}
+		</if>
+		
+		<if test='boardTitle != null and !boardTitle.equals("")'>
+			and board_title like '%' || #{boardTitle} || '%'
+		</if>
+		
+		<if test='boardWriter != null and boardWriter != ("")'>
+			and board_writer = #{boardWriter}
+		</if>
+	</select>
+		
+</mapper>
