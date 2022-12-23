@@ -2,11 +2,15 @@ package kr.or.ddit.http;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.StringTokenizer;
 
 /**
@@ -96,9 +100,43 @@ public class MyHttpServer {
 					 }
 				 }
 				 
-				 // 접근할 파일경로
-				 String filePath = "./WebContent" + reqPath;
+				 // URL 디코딩 처리(한글 깨짐 문제)
+				 reqPath = URLDecoder.decode(reqPath, "UTF-8");
 				 
+				 
+				 // 접근할 파일경로
+				 String filePath = "./WepContent" + reqPath;
+				 System.out.println("요청 경로 => " + filePath);
+				 
+				 // 해당 파일 이름을 이용하여 Content-Type 정보 추출하기
+				 String contentType = URLConnection.getFileNameMap().getContentTypeFor(filePath);
+				 
+				 // css파일인 경우 인식이 안되서 추가함
+				 if(contentType == null && filePath.endsWith(".css")) {
+					 contentType = "text/css";
+				 }
+				 
+				 File file = new File(filePath);
+				 if(!file.exists()) {
+					 makeErrorPage(out, 404, "Not Found");
+					 return;
+				 }
+				 
+				 byte[] body = makeResponseBody(filePath);
+				 byte[] header = makeResponseHeader(body.length, contentType);
+				 
+				 // 헤더정보 보내기
+				 out.write(header);
+				 
+				 printMsg("응답헤더", new String(header));
+				 
+				 // 응답내용 보내기 전 반드시 Empty Line 보내기
+				 out.write("\r\n\r\n".getBytes());
+				 
+				 // 응답내용 보내기
+				 out.write(body);
+				 
+				 out.flush();
 				 
 			 }catch(IOException e) {
 				 e.printStackTrace();
@@ -123,9 +161,76 @@ public class MyHttpServer {
 			System.out.println("================================================");
 			System.out.println(reqHeaderStr);
 			System.out.println("------------------------------------------------");
-			
 		}
 	 }
+	 
+	 /**
+	  * 응답 내용(BODY) 생성하기
+	  * @param filePath 응답으로 사용할 파일 경로
+	  * @return 바이트 배열 데이터
+	  */
+	 private byte[] makeResponseBody(String filePath) {
+		 
+		 FileInputStream fis = null;
+		 
+		 byte[] data = null;
+		 
+		 try {
+			 File file = new File(filePath);
+			 data = new byte[(int)file.length()];
+			 
+			 fis = new FileInputStream(file);
+			 fis.read(data);
+			 
+			 
+		 }catch(IOException e) {
+			 e.printStackTrace();
+		 }finally {
+			 try {
+				 fis.close();
+			 }catch(IOException e) {
+				 e.printStackTrace();
+			 }
+		 }
+		 return data;
+		 
+	 }
+	 
+	 /**
+	  * 응답헤더 생성하기
+	  * @param contentLength 응답내용 크기
+	  * @param mimeType 마임타입
+	  * @return 헤더내용 바이트 배열
+	  */
+	 private byte[] makeResponseHeader(int contentLength, String mimeType) {
+		 
+		 String header = "HTTP/1.1 200 OK\r\n"
+				 		+ "Server: MyHttpServer 1.0\r\n"
+				 		+ "Content-length: " + contentLength + "\r\n" 
+				 		+ "Content-Type: " + mimeType + ";charset="
+				 		+ this.encoding;
+		 
+		 return header.getBytes();
+		 
+	 }
+	 
+	 /**
+	  * 에러페이지 생성
+	  * @param out 출력스트림
+	  * @param statusCode 상태코드
+	  * @param errMsg 에러메세지
+	  */
+	 private void makeErrorPage(OutputStream out, int statusCode, String errMsg) {
+		 String statusLine = "HTTP/1.1 " + statusCode + " " + errMsg;
+		 
+		 try {
+			 out.write(statusLine.getBytes());
+			 out.flush();
+		 }catch(IOException e) {
+			 e.printStackTrace();
+		 }
+	 }
+	 
 	 
 	 public static void main(String[] args) {
 		new MyHttpServer().start();
