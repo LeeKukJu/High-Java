@@ -29,7 +29,7 @@
 		%>
 		<tr>
 			<td><%=memList.get(i).getMemId() %></td>
-			<td><%=memList.get(i).getMemName() %></td>
+			<td><a href="./detail.do?memId=<%=memList.get(i).getMemId() %>"><%=memList.get(i).getMemName() %></a></td>
 			<td><%=memList.get(i).getMemTel() %></td>
 			<td><%=memList.get(i).getMemAddr() %></td>
 		</tr>

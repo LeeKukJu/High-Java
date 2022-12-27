@@ -31,6 +31,7 @@ public class MyBatisDao {
 	}
 
 	// 쿼리 실행과 그에 필요한 객체가 필요한 경우
+	// 쿼리 실행 결과로 나오는 결과 타입에 따라 리턴타입이 결정됌 
 	public <T> T selectOne(String statement, Object parameter) {
 
 		// 세션 열기
@@ -40,7 +41,7 @@ public class MyBatisDao {
 
 		try {
 
-			obj = session.selectOne(statement, parameter);
+			obj = session.selectOne(statement, parameter); // 쿼리 실행 결과 memberVO 타입으로 뱉음.
 
 		} catch (PersistenceException e) {
 			throw new RuntimeException("데이터 조회 작업 중 예외발생", e);

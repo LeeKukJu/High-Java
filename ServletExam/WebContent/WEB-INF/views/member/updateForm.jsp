@@ -13,13 +13,13 @@
 <title>회원정보 변경</title>
 </head>
 <body>
-	<form action="updateMember" method="post">
+	<form action="./update.do" method="post"> <!-- action="./update.do" -->
 		
 		<input type="hidden" name="memId" value="<%=mv.getMemId()%>">
 		<table>
 			<tr>
 				<td>I D:</td>
-				<td></td>
+				<td><%=mv.getMemId()%></td>
 			</tr>
 			<tr>
 				<td>이름:</td>
