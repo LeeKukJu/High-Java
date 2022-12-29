@@ -38,10 +38,8 @@
 
 		</environment>
 	</environments>
-
 	<mappers>
 		<mapper resource="mapper/member.xml" />
 		<mapper resource="mapper/atchFile.xml" />
 	</mappers>
-
 </configuration>

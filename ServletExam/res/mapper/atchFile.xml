@@ -38,7 +38,7 @@
 		#{atchFileId}
 		,(select nvl(max(file_sn), 0) + 1
 			from atch_file_detail
-		   where atch_file_id = #{atchFileId)
+		   where atch_file_id = #{atchFileId})
 		,#{fileStreCours}
 		,#{streFileNm}
 		,#{orignlFileNm}

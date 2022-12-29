@@ -30,8 +30,8 @@
 	 	<insert id="insertMember" parameterType="kr.or.ddit.member.vo.MemberVO">
 	 	
 	 		insert into mymember 
-	 		(mem_id, mem_name, mem_tel, mem_addr, reg_dt) 
-			values (#{memId}, #{memName}, #{memTel}, #{memAddr}, sysdate)
+	 		(mem_id, mem_name, mem_tel, mem_addr, reg_dt, atch_file_id) 
+			values (#{memId}, #{memName}, #{memTel}, #{memAddr}, sysdate, #{atchFileId})
 	 			    <!-- #{memName, jdbcType=VARCHAR} -->
 	 	</insert>
 	 	
@@ -40,7 +40,8 @@
 	 		UPDATE mymember 
 	 		SET mem_name = #{memName}, 
 	 			mem_tel = #{memTel}, 
-	 			mem_addr = #{memAddr} 
+	 			mem_addr = #{memAddr},
+	 			atch_file_id = #{atchFileId} 
 	 		WHERE mem_id = #{memId} 
 	 	
 	 	</update>
@@ -57,6 +58,7 @@
 	 		<result column="mem_name" property="memName"/>
 	 		<result column="mem_tel" property="memTel"/>
 	 		<result column="mem_addr" property="memAddr"/>
+	 		<result column="atch_file_id" property="atchFileId"/>
 	 	</resultMap>
 	 	
 <!-- 	<select id="selectAllMember" resultMap="memMap"> -->

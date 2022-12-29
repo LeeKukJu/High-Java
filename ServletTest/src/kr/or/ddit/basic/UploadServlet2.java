@@ -80,7 +80,7 @@ public class UploadServlet2 extends HttpServlet {
 			
 		/////////////////////////////////////////////////////
 		
-		2. multipart 바디를 위한 헤더 정ㅂ로 사용되는 경우... ex) 파일 업로드
+		2. multipart 바디를 위한 헤더 정보로 사용되는 경우... ex) 파일 업로드
 			Content-Disposition: form-data
 			Content-Disposition: form-data; name="필드명"
 			Content-Disposition: form-data; name="필드명"; filename="a.jpg"
