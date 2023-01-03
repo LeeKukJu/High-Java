@@ -1,0 +1,33 @@
+package kr.or.ddit.basic;
+
+public class HelloWorld {
+	public static void main(String[] args) {
+		System.out.println("아아아아 버려");
+		System.out.println("안녕하세요");
+		System.out.println("소라 테스트 중");
+		System.out.println("sdaasdadsaasa");
+		System.out.println("충돌충돌");
+		System.out.println("충돌충돌");
+		System.out.println("충돌충돌");
+		System.out.println("충돌충돌");
+		
+		
+		System.out.println("충돌날까안날까");
+		System.out.println("충돌충돌");
+		
+		System.out.println("충돌날까안날까");
+		System.out.println("충돌충돌");
+		
+		System.out.println("충돌충돌");
+		System.out.println("충돌충돌");
+		
+		
+		System.out.println("충돌날까안날까");
+		System.out.println("충돌충돌");
+		
+		
+		
+		
+		System.out.println("충돌충돌");
+	}
+}
