@@ -1,0 +1,114 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+	
+<%@include file="sidebarProfileImg.jsp"%>	
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>SideBar sub menus</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+<!-- CSS -->
+<link rel="stylesheet" href="/DDITMATE/assets/css/sidemain_style.css">
+
+</head>
+
+<body id="body-pd">
+	<div class="l-navbar" id="navbar">
+		<nav class="nav">
+			<div>
+				<div class="nav__brand">
+					<ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle">
+					</ion-icon>
+
+<!-- 					profile box -->
+					<%if(pv1 != null){%>
+					<img class="nav_profile" src="/DDITMATE/member_pic/<%=pv1.getSavePic() %>" style="height: 166px;"  alt="프사없음">
+					<p style="margin: 10px;text-align: center;"><%=mv1.getMemNick()%></p>
+					<%	
+					}else{
+					%>
+					<img class="nav_profile" src="/DDITMATE/member_pic/profile.png" style="height: 166px;"  alt="프사없음">
+					<p style="margin: 10px;text-align: center;"><%=mv1.getMemNick()%></p>
+					<%	
+					}
+					%>
+					<p></p>
+<!-- 					profile box -->
+				</div>
+
+				<div class="nav__list" style="width:200px;">
+					<div href="#" class="nav__link custom-collapse active">
+						<ion-icon name="home-outline" class="nav__icon"></ion-icon> 
+						<span class="nav_name">마이페이지</span>
+						<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+						<ul class="collapse__menu" style="width:200px">
+							<a href="<%=request.getContextPath()%>/member/memCheck.do" class="collapse__sublink">회원정보조회</a><br>
+							<a href="<%=request.getContextPath()%>/myboard/listMyBoard.do" class="collapse__sublink">작성게시글</a><br>
+							<a href="<%=request.getContextPath()%>/myment/ListMyMent.do" class="collapse__sublink">작성댓글</a>
+						</ul>
+					</div>
+<!-- 					<a href="#" class="nav__link active">  -->
+<!-- 					<ion-icon name="home-outline" class="nav__icon"></ion-icon>  -->
+<!-- 					<span class="nav_name">마이페이지</span> -->
+<!-- 					</a>  -->
+					
+					<a href="/DDITMATE/mail/mailReceiveList.do" class="nav__link"> 
+					<ion-icon name="chatbubbles-outline" class="nav__icon"></ion-icon> 
+					<span class="nav_name">쪽지함</span>
+					</a>
+
+<!-- 					<div href="/middle/studyList.jsp" class="nav__link custom-collapse active"> -->
+						<a href="<%=application.getContextPath()%>/room/listRoom.do" class="nav__link">
+						<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+						<span class="nav_name">스터디목록</span>
+						</a>
+<!-- 						<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon> -->
+<!-- 						<ul class="collapse__menu"> -->
+<!-- 							<a href="#" class="collapse__sublink">Data</a> -->
+<!-- 							<a href="#" class="collapse__sublink">Group</a> -->
+<!-- 							<a href="#" class="collapse__sublink">Members</a> -->
+<!-- 						</ul> -->
+<!-- 					</div> -->
+
+					<!--                     <a href="#" class="nav__link"> -->
+					<!--                         <ion-icon name="pie-chart-outline" class="nav__icon"></ion-icon> -->
+					<!--                         <span class="nav_name">Analytics</span> -->
+					<!--                     </a> -->
+
+					<div href="#" class="nav__link collapse">
+						<ion-icon name="people-outline" class="nav__icon"></ion-icon>
+						<span class="nav_name">Team</span>
+
+						<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+
+						<ul class="collapse__menu">
+							<a href="#" class="collapse__sublink">Data</a>
+							<a href="#" class="collapse__sublink">Group</a>
+							<a href="#" class="collapse__sublink">Members</a>
+						</ul>
+					</div>
+
+<!-- 					<a href="/DDITMATE/member/memChange.do" class="nav__link">  -->
+<!-- 					<ion-icon name="settings-outline" class="bx bx-user-circle nav__icon"></ion-icon>  -->
+<!-- 					<span class="nav_name">회원정보조회</span> -->
+<!-- 					</a> -->
+				
+				<a href="<%=application.getContextPath()%>/logout.do" class="nav__link"> 
+				<ion-icon name="log-out-outline" class="nav__icon"></ion-icon> 
+				<span class="nav_name">로그아웃</span>
+				</a>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<!-- IONICONS -->
+	<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+	<!-- JS -->
+	<script src="<%=application.getContextPath()%>/assets/js/sidemain.js"></script>
+</body>
+</html>

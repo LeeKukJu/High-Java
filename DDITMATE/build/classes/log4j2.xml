@@ -15,16 +15,7 @@
 
   <Loggers>
   	<!-- 여기에 로거 추가 -->
-  	<Logger name="log4jexam.sql.Query" level="debug" additivity="false">
-  		<AppenderRef ref="Console"/>
-  		<AppenderRef ref="MyFile"/>
-  	</Logger>
-  	<Logger name="log4jexam.sql.Paramter" level="info" additivity="false">
-  		<AppenderRef ref="Console"/>
-  	</Logger>
-  	<Logger name="kr.or.ddit.basic.T01MemberInfoTest" level="info" additivity="false">
-  		<AppenderRef ref="Console"/>
-  	</Logger>
+  
   	
 
 <!-- 	디폴트 셋팅 -->

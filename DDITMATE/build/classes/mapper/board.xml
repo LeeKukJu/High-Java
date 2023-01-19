@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+
+	<!-- 이 영역에 sql문에 맞는 태그를 사용하여 SQL문을 기술한다. 사용할 수 있는 기본적인 태그들 <select> ~~~ 
+		</select> <insert> ~~~ </insert> <update> ~~~ </update> <delete> ~~~ </delete> 
+		위 태그에서 사용되는 주요 속성들 1) id : 해당 태그를 호출할 때 namespace명과 연결하여 사용하는 아이디 2) parameterType 
+		: SQL문에 사용될 데이터가 들어있는 객체 타입을 지정함. (보통 VO클래스, 자바의 자료형이름 등이 사용된다.) (typeAlias로 
+		지정한 alias명을 사용할 수 있다.) 3) resultType : select문을 실행한 결과를 담을 객체타입을 지정한다. (보통 
+		VO클래스, 자바의 자료형이름 등이 사용된다.) (typeAlias로 지정한 alias명을 사용할 수 있다.) 4) resultMap 
+		: 결과 레코드 컬럼명과 VO객체의 속성명이 다를 경우에 적절한 매핑을 위해 사용한다. -->
+
+	<resultMap type="boardVO" id="boardMap">
+		<result column="board_no" property="boNo" />
+		<result column="category_code" property="cateCode" />
+		<result column="category_name" property="cateName" />
+		<result column="mem_id" property="memId" />
+		<result column="mem_nick" property="memNick" />
+		<result column="board_title" property="boTitle" />
+		<result column="board_contents" property="boContents" />
+		<result column="board_click_num" property="boClickNum" />
+		<result column="board_like_num" property="boLikeNum" />
+		<result column="board_ment_num" property="boMentNum" />
+		<result column="board_write_date" property="boWriteDate" />
+		<result column="board_modify_date" property="boModifyDate" />
+		<result column="recruitment" property="recruitment" />
+		<result column="room_code" property="roomCode" />
+	</resultMap>
+
+	<insert id="insertBoard" parameterType="boardVO">
+
+		INSERT INTO board
+		(BOARD_NO, CATEGORY_CODE, MEM_ID, BOARD_TITLE,
+		BOARD_CONTENTS,BOARD_WRITE_DATE)
+		VALUES
+		((BOARD_NUM_SEQ.NEXTVAL),
+		#{cateCode}, #{memId}, #{boTitle}, #{boContents}, sysdate)
+
+	</insert>
+
+	<select id="selectBoard" parameterType="boardVO" resultMap="boardMap">
+		SELECT b.*, m.mem_Nick 
+		FROM board b, member m
+		WHERE  b.mem_id = m.mem_id
+  		AND b.board_no = #{boNo}
+  		AND b.category_code = #{cateCode}
+	</select>
+
+	<update id="clickNum" parameterType="hashMap">
+		UPDATE board
+		SET board_click_num = board_click_num+1
+		WHERE board_no = #{boNo}
+		AND category_code = #{cateCode}
+	</update>
+
+	<update id="updateBoard" parameterType="boardVO">
+
+		UPDATE BOARD
+		   SET BOARD_TITLE = #{boTitle},
+			   BOARD_CONTENTS = #{boContents},
+			   BOARD_MODIFY_DATE = SYSDATE
+	     WHERE CATEGORY_CODE = #{cateCode}
+	       AND BOARD_NO = #{boNo}
+	</update>
+
+	<delete id="deleteBoard" parameterType="boardVO">
+
+		DELETE BOARD
+		WHERE CATEGORY_CODE = #{cateCode}
+		AND BOARD_NO = #{boNo}
+
+	</delete>
+
+
+	<!-- <select id="selectAllMember" resultMap="memMap"> -->
+	<select id="selectAllBoard" resultType="boardVO">
+
+		<!-- VO 필드명으로 as 해줘야 맵핑 됌 -->
+		<!-- select mem_id as memId, mem_name as memName, mem_tel as memTel, mem_addr 
+			as memAddr from member -->
+
+		select *
+		from member
+
+	</select>
+
+	<select id="getBoard" parameterType="hashMap"
+		resultMap="boardMap">
+
+		SELECT * FROM(
+		SELECT tb.*, ROWNUM rNum FROM(
+		SELECT b.*, c.category_name, m.mem_nick
+		FROM board b, member m, board_category c
+		WHERE b.mem_id = m.mem_id
+		AND b.category_code = c.category_code
+		AND b.category_code LIKE #{cateCode} || '%'
+		ORDER BY b.board_no DESC
+		) tb
+		)
+		WHERE rNum BETWEEN #{start} AND #{end}
+
+	</select>
+
+	<!-- parameterType 데이터가 1개일 경우 생략가능 -->
+	<select id="checkBoard" parameterType="String" resultType="int">
+
+		select count(*) as cnt from member
+		where mem_id = #{memId}
+
+	</select>
+
+	<select id="searchBoard" parameterType="hashMap"
+		resultMap="boardMap">
+
+		SELECT * FROM(
+		SELECT tb.*, ROWNUM rNum FROM(
+		SELECT b.*, c.category_name, m.mem_nick
+		FROM board b, member m, board_category c
+		WHERE b.mem_id = m.mem_id
+		AND b.category_code = c.category_code
+		AND b.category_code LIKE #{cateCode} || '%'
+		AND b.board_title LIKE '%' || #{searchWord} || '%'
+		ORDER BY b.board_no DESC
+		) tb
+		)
+		WHERE rNum BETWEEN #{start} AND #{end}
+
+	</select>
+
+	<select id="totalCount" parameterType="hashMap" resultType="int">
+
+		select count(*) as total_count
+		from (
+		SELECT b.*, c.category_name, m.mem_nick
+		FROM board b, member m, board_category c
+		WHERE b.mem_id = m.mem_id
+		AND b.category_code = c.category_code
+		AND b.category_code LIKE #{cateCode} || '%'
+		<if test='searchWord != null and !searchWord.equals("")'>
+			AND b.board_title LIKE '%' || #{searchWord} || '%'
+		</if>
+		ORDER BY b.board_no DESC
+		)
+
+	</select>
+
+	<update id="boardLikeNum">
+		<!-- 좋아요 증가를 위한 쿼리문 -->
+		UPDATE board
+		SET board_like_num = board_like_num+1
+		WHERE board_no = #{boNo}
+		AND category_code = #{cateCode};
+	</update>
+	
+	<select id="selectMyBoard" resultMap="boardMap">
+		SELECT b.*, c.category_name, m.mem_nick
+		FROM board b, member m, board_category c
+		WHERE b.mem_id = m.mem_id
+		AND b.category_code = c.category_code
+		and b.mem_id = #{memId}
+		
+	</select>
+
+</mapper>

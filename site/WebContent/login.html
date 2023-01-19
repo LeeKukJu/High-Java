@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<!-- 부트스트랩 사용하기 위한 준비 -CDN방식으로 라이브러리 가져옴 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+.container-fluid
+{
+	width: 40%;
+	margin: 25%;
+}
+.row
+{
+	border: 4px solid lightgray;
+	padding: 10%;
+}
+.join
+{
+	text-align: center;
+}
+</style>
+</head>
+
+<body>
+	<!-- 로그인 페이지 -->
+	<form method="post" action="/site/Login"> 
+	<!-- form버튼 사용하기 위해서 form태그 추가(ajax방식 이용하려면 필요 없음)
+		, name속성도 꼭 필요!! -->
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12">
+				<input id="userId" class="form-control" name="userId">
+			</div>
+			<div class="col-xs-12">
+				<input type="password" id="userPw" class="form-control" name="userPw">
+			</div>
+			<div class="col-xs-12">
+				<input type="submit" id="loginForm" class="btn btn-primary col-xs-12" value="로그인(form)" >
+<!-- 				<input type="button" id="loginAjax" class="btn btn-success col-xs-12" value="로그인(ajax)" > -->
+			</div>
+			<div class="col-xs-12 join">
+			<!--회원가입페이지 이동하기1 - 하이퍼링크로 선정한 페이지로 이동 -->
+			<!--<a href="./hyperlink_join.jsp">회원가입</a> -->
+				
+			<!--회원가입페이지 이동하기2 
+				- 서블릿으로 회원가입코드를 생성 후 코드 존재시에만 회원가입페이지 끼워넣기 -->
+				<a href="/site/join">회원가입</a>
+			</div>
+		</div>
+	</div>
+	</form>
+
+<script>
+
+	let v_btn = document.querySelector("#loginAjax");
+	v_btn.addEventListener('click', function(){
+		//데이터 변수에 담아서 urlencode형식으로 가공하고 send로 전달하기
+		let uId = document.querySelector('#userId').value;
+		let uPw = document.querySelector('#userPw').value;
+
+		//let data = "userId=" + uId + "&userPw=" + uPw;
+		let data = `userId=${uId}&userPw=${uPw}`;
+		
+		//ajax로 loadTest 응답데이터 가져오기
+		let req = new XMLHttpRequest();
+		req.open('post', 'loadTest.jsp');
+		req.onreadystatechange = function(){
+			if(req.readyState == 4 && req.status == 200){
+				console.log(req.responseText);
+				//ok일때
+				let jsonObj = JSON.parse(req.responseText); //JSON => js object로 변환
+				if(jsonObj.rst == "ok"){
+					//location.href = "/site";
+					//WEB-INF폴더(보안폴더)안의 test.html에 접근하기 위해서는 서블릿을 통해야 한다.
+					location.href="/site/Main";
+				}else{
+					//fail일때 - 현재 화면(login페이지)에 그대로 머무르기
+				}
+				
+				//fail일때  -현재 화면(login페이지)에 그대로 머무르기
+			}
+		}
+		//send직전에 requestHeader정보 설정해줘야 함
+		req.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=utf-8');
+		req.send(data); //데이터를 줘야해
+	});
+	
+</script>	
+</body>
+</html>

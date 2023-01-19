@@ -1,0 +1,148 @@
+<%@page import="board.vo.BoardVO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@include file="/header.jsp"%>
+<%@include file="/memberSide.jsp"%>
+
+<body>
+ <%
+  String memId = (String) session.getAttribute("memId");
+  String cateCode = request.getParameter("cateCode");
+  int boNo = Integer.parseInt(request.getParameter("boNo"));
+  String roomCode = request.getParameter("roomCode");
+  String roomMaster = request.getParameter("roomMaster");
+  
+  BoardVO bv = (BoardVO)request.getAttribute("bv");
+
+  System.out.println("현재 세션 아이디: " + memId);
+  System.out.println("게시글 수정으로 넘어온 cateCode: " + cateCode + ", boNo: " + boNo);
+  System.out.println("jsp넘어온 roomCode: " + roomCode + ", 관리자여부: " + roomMaster);
+  %>
+
+   <!-- Start Banner -->
+   <%@include file="/boardBanner.jsp"%>
+   <!-- End Banner -->
+   <div class="container">
+      <div style="padding: 50px;"></div>
+
+      <form action="updateRoomBoard.do" method="post" enctype="multipart/form-data">
+         <table style="text-align: left; margin-left: 100px; width: 80%; border: 1px solid #dddddd">
+            <thead>
+               <tr>
+                  <th colspan="2" style="padding-top: 25px; background-color: #eeeeee; text-align: left;">
+                     
+                  </th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>
+              		 <input type="hidden" name="cateCode" value="<%=cateCode%>">
+               		 <input type="hidden" name="boNo" value="<%=boNo%>">
+               		 <input type="hidden" name="roomCode" value="<%=roomCode%>">
+               		 <input type="hidden" name="roomMaster" value="<%=roomMaster%>">
+                     <input type="text" class="form-control" placeholder="제목" name="boardTitle" maxlength="50" autofocus>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <textarea id="summernote" name="boardContents"></textarea>
+                     <br>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+
+         <input class="btn btn-primary float-end msg" type="submit" value="등록" style="position: relative; right: 15%; margin-top: 10px;">
+      </form>
+
+
+   </div>
+
+
+   <!-- Start Work -->
+   <div class="row justify-content-center my-5"></div>
+
+   <%@include file="/footer.jsp"%>
+
+   <!-- //////////////////////////서머노트//////////////////////////////////-->
+   <script>
+      $(document)
+            .ready(
+                  function() {
+                     let toolbar = [
+                           // 글꼴 설정
+                           [ 'fontname', [ 'fontname' ] ],
+                           // 글자 크기 설정
+                           [ 'fontsize', [ 'fontsize' ] ],
+                           // 굵기, 기울임꼴, 밑줄,취소 선, 서식지우기
+                           [
+                                 'style',
+                                 [ 'bold', 'italic', 'underline',
+                                       'strikethrough', 'clear' ] ],
+                           // 글자색
+                           [ 'color', [ 'forecolor', 'color' ] ],
+                           // 표만들기
+                           [ 'table', [ 'table' ] ],
+                           // 글머리 기호, 번호매기기, 문단정렬
+                           [ 'para', [ 'ul', 'ol', 'paragraph' ] ],
+                           // 줄간격
+                           [ 'height', [ 'height' ] ],
+                           // 그림첨부, 링크만들기, 동영상첨부
+                           [ 'insert', [ 'picture', 'link', 'video' ] ],
+                           // 코드보기, 확대해서보기, 도움말
+                           [
+                                 'view',
+                                 [ 'codeview', 'fullscreen', 'help' ] ] ];
+
+                     let setting = {
+                        height : 400,
+                        minHeight : null,
+                        maxHeight : null,
+//                         palceholder : '내용을 입력해주세요',
+//                         focus : true,
+                        lang : 'ko-KR',
+                        toolbar : toolbar,
+                        callbacks : { //여기 부분이 이미지를 첨부하는 부분
+                           onImageUpload : function(files, editor,
+                                 welEditable) {
+                              for (let i = files.length - 1; i >= 0; i--) {
+                                 uploadSummernoteImageFile(files[i],
+                                       this);
+                              }
+                           }
+                        }
+                     };
+
+                     $('#summernote').summernote(setting);
+                  });
+
+      function uploadSummernoteImageFile(file, el) {
+         /*let data에 FormDate 주입 후
+          * data.append를 하여 file이란 이름에 file이란 변수를 넣어줌
+          * parameter로 받아온 file을 "file에 넣는 것"*/
+         var data = new FormData();
+         data.append("file", file);
+         $.ajax({
+            data : data,
+            type : "POST",
+            url : "../common/uploadImageFile.do",
+            contentType : false,
+            enctype : 'multipart/form-data',
+            processData : false,
+            success : function(url) {
+               console.log(url)
+               $(el).summernote('editor.insertImage', url);
+            }
+         });
+      }
+      $('.msg').on('click',function(){
+    	  let modifyBo = confirm("수정하시겠습니까?")
+    	  if(modifyBo == true){
+    		  return true;
+    	  }
+    	  else{
+    		  return false;
+    	  }
+      });
+   </script>

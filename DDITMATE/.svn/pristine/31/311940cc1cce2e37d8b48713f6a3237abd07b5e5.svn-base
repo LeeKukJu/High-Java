@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="room">
+
+	<!-- 이 영역에 sql문에 맞는 태그를 사용하여 SQL문을 기술한다. 사용할 수 있는 기본적인 태그들 <select> ~~~ 
+		</select> <insert> ~~~ </insert> <update> ~~~ </update> <delete> ~~~ </delete> 
+		위 태그에서 사용되는 주요 속성들 1) id : 해당 태그를 호출할 때 namespace명과 연결하여 사용하는 아이디 2) parameterType 
+		: SQL문에 사용될 데이터가 들어있는 객체 타입을 지정함. (보통 VO클래스, 자바의 자료형이름 등이 사용된다.) (typeAlias로 
+		지정한 alias명을 사용할 수 있다.) 3) resultType : select문을 실행한 결과를 담을 객체타입을 지정한다. (보통 
+		VO클래스, 자바의 자료형이름 등이 사용된다.) (typeAlias로 지정한 alias명을 사용할 수 있다.) 4) resultMap 
+		: 결과 레코드 컬럼명과 VO객체의 속성명이 다를 경우에 적절한 매핑을 위해 사용한다. -->
+
+	<resultMap type="roomVO" id="roomMap">
+		<result column="room_code" property="roomCode" />
+		<result column="room_title" property="roomTitle" />
+		<result column="room_date" property="roomDate" />
+		<result column="mem_id" property="memId" />
+		<result column="room_master" property="roomMaster" />
+	</resultMap>
+
+	<resultMap type="roomMemberVO" id="roomMemberMap">
+
+	</resultMap>
+
+	<resultMap type="roomBoardVO" id="roomBoardMap">
+		<result column="board_no" property="boNo" />
+		<result column="category_code" property="cateCode" />
+		<result column="category_name" property="cateName" />
+		<result column="mem_id" property="memId" />
+		<result column="mem_name" property="memName" />
+		<result column="board_title" property="boTitle" />
+		<result column="board_contents" property="boContents" />
+		<result column="board_click_num" property="boClickNum" />
+		<result column="board_like_num" property="boLikeNum" />
+		<result column="board_ment_num" property="boMentNum" />
+		<result column="board_write_date" property="boWriteDate" />
+		<result column="board_modify_date" property="boModifyDate" />
+		<result column="recruitment" property="recruitment" />
+		<result column="room_code" property="roomCode" />
+	</resultMap>
+
+	<insert id="createRoom" parameterType="roomVO">
+		insert into room (
+		room_code,
+		room_title,
+		room_date
+		) VALUES (
+		#{roomCode},
+		#{roomTitle},
+		sysdate
+		)
+	</insert>
+
+	<insert id="insertRoomMember" parameterType="roomVO">
+		INSERT INTO room_mem
+		(
+		mem_id,
+		room_code,
+		room_master
+		) VALUES (
+		#{memId},
+		#{roomCode},
+		#{roomMaster}
+		)
+	</insert>
+
+	<select id="selectRoomList" resultMap="roomMap">
+		select r.*, rm.mem_id,
+		rm.room_master
+		from room r, room_mem rm
+		where r.room_code = rm.room_code
+		and rm.mem_id = #{memId}
+	</select>
+
+	<delete id="deletRoom" parameterType="roomVO">
+		DELETE FROM room
+		WHERE
+		room_code = #{roomCode}
+	</delete>
+
+	<delete id="deletRoomAllMember" parameterType="roomVO">
+		DELETE FROM
+		room_mem
+		WHERE room_code = #{roomCode}
+	</delete>
+
+	<delete id="deletRoomMember" parameterType="roomVO">
+		DELETE FROM room_mem
+		WHERE mem_id = #{memId}
+		AND room_code = #{roomCode}
+	</delete>
+
+	<select id="selectRoomMemberList" resultType="roomMemberVO">
+		select m.mem_id,
+		m.mem_name, m.mem_email, m.mem_tel, m.mem_date,
+		rm.room_code,
+		rm.room_master,
+		r.room_title, r.room_date
+		from member m, room_mem rm,
+		room r
+		where m.mem_id = rm.mem_id
+		and rm.room_code = r.room_code
+		and
+		rm.room_code = #{roomCode}
+	</select>
+
+	<select id="getRoomBoard" parameterType="hashMap"
+		resultMap="roomBoardMap">
+
+		SELECT * FROM(
+		SELECT tb.*, ROWNUM rNum FROM(
+		SELECT b.*,
+		c.category_name, m.mem_name
+		FROM board b, member m, board_category c
+		WHERE b.mem_id = m.mem_id
+		AND b.category_code = c.category_code
+		AND
+		b.category_code LIKE #{cateCode} || '%'
+		AND b.room_code = #{roomCode}
+		ORDER BY b.board_no DESC
+		) tb
+		)
+		WHERE rNum BETWEEN #{start} AND #{end}
+
+	</select>
+
+	<select id="searchRoomBoard" parameterType="hashMap"
+		resultMap="roomBoardMap">
+
+		SELECT * FROM(
+		SELECT tb.*, ROWNUM rNum FROM(
+		SELECT b.*,
+		c.category_name, m.mem_name
+		FROM board b, member m, board_category c
+		WHERE b.mem_id = m.mem_id
+		AND b.category_code = c.category_code
+		AND
+		b.category_code LIKE #{cateCode} || '%'
+		AND b.room_code = #{roomCode}
+		AND b.board_title LIKE '%' || #{searchWord} || '%'
+		ORDER BY b.board_no
+		DESC
+		) tb
+		)
+		WHERE rNum BETWEEN #{start} AND #{end}
+
+	</select>
+
+	<insert id="insertRoomBoard">
+		INSERT INTO board
+		(BOARD_NO, CATEGORY_CODE, MEM_ID,
+		BOARD_TITLE,
+		BOARD_CONTENTS,BOARD_WRITE_DATE,ROOM_CODE)
+		VALUES
+		((BOARD_NUM_SEQ.NEXTVAL),
+		#{cateCode}, #{memId}, #{boTitle},
+		#{boContents}, sysdate, #{roomCode})
+	</insert>
+
+	<update id="updateRoomBoard" parameterType="roomBoardVO">
+		UPDATE BOARD
+		SET BOARD_TITLE = #{boTitle},
+		BOARD_CONTENTS = #{boContents},
+		BOARD_MODIFY_DATE = SYSDATE
+		WHERE CATEGORY_CODE = #{cateCode}
+		AND BOARD_NO = #{boNo}
+		AND ROOM_CODE = #{roomCode}
+	</update>
+	
+</mapper>

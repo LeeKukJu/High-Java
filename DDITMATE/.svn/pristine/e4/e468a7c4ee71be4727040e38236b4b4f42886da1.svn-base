@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blame">
+  <resultMap type="blame.vo.BlameVO" id="blaMap">
+    <result column="BLAME_NO" property="blaNo" />
+    <result column="BLAME_CONTENTS" property="blaContents" />
+    <result column="BLAME_DATE" property="blaDate" />
+    <result column="MEM_ID" property="memId"  />
+    <result column="MENT_NO" property="mentNo" />
+    <result column="BOARD_NO" property="boNo" />
+    <result column="CATEGORY_CODE" property="cateCode" />
+    <result column="BLAME_CATEGORY" property="blaCate" />  
+  </resultMap>
+  	
+	<select id="blameList" resultMap="blaMap" parameterType="String">
+		SELECT * from blame
+		WHERE BLAME_CATEGORY = #{blaCate}
+		<!--  -->
+	</select>
+	
+	
+	<insert id="insertBlame" parameterType="blame.vo.BlameVO">
+		INSERT INTO blame
+		( BLAME_NO, BLAME_CONTENTS, MEM_ID,
+<!-- 		<if test='mentNo != null and !mentNo.equals("")'> -->
+<!-- 		MENT_NO,  -->
+<!-- 		</if>  -->
+		BOARD_NO, CATEGORY_CODE, BLAME_CATEGORY)
+		values ((BLAME_NO_SEQ.NEXTVAL), #{blaContents}, #{memId}, 
+<!-- 		<if test='mentNo != null and !mentNo.equals("")'> -->
+<!-- 		#{mentNo}, -->
+<!-- 		</if>  -->
+		#{boNo}, #{cateCode}, #{blaCate})		
+	</insert>
+	
+	<insert id="insertMentBlame" parameterType="blame.vo.BlameVO">
+		INSERT INTO blame
+		( BLAME_NO, BLAME_CONTENTS, MEM_ID,
+<!-- 		<if test='mentNo != null and !mentNo.equals("")'> -->
+ 		MENT_NO, 
+<!-- 		</if>  -->
+		BOARD_NO, CATEGORY_CODE, BLAME_CATEGORY)
+		values ((BLAME_NO_SEQ.NEXTVAL), #{blaContents}, #{memId}, 
+		#{mentNo},
+		#{boNo}, #{cateCode}, #{blaCate})		
+	</insert>
+	
+	<delete id="deleteBlame" parameterType="blame.vo.BlameVO">
+		DELETE from blame
+		WHERE CATEGORY_CODE = #{cateCode}
+		AND BOARD_NO = #{boNo}
+	</delete>
+	
+	
+	<select id="getBlame" parameterType="int" resultMap="blaMap">
+		SELECT * from blame
+		WHERE BLAME_NO = #{blaNo}
+	</select>
+	
+	
+</mapper>

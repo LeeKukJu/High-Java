@@ -149,4 +149,9 @@
  	<session-config>
  		<session-timeout>1</session-timeout>
  	</session-config>
+ 	
+ 	<context-param>
+		<param-name>CHAT_ADDR</param-name>
+		<param-value>ws://192.168.34.16/ServletTest</param-value>
+	</context-param>
 </web-app>

@@ -25,7 +25,7 @@ public class UploadServlet2 extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+		req.setCharacterEncoding("utf-8");
 		// Multipart Parsing전에 파라미터 정보 조회해 보기
 		System.out.println("Multipart Parsing전 => " + req.getParameter("sender"));
 

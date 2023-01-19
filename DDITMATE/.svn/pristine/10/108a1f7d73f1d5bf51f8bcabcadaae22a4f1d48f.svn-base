@@ -1,0 +1,67 @@
+package calendar.service;
+
+import java.util.List;
+
+import calendar.dao.CalendarDaoImpl;
+import calendar.dao.ICalendarDao;
+import calendar.vo.CalendarVO;
+
+public class CalendarServiceImpl implements ICalendarService{
+	
+	private ICalendarDao calDao;
+	
+	private static ICalendarService calService;
+	
+	private CalendarServiceImpl() {
+		calDao = CalendarDaoImpl.getInstance();
+	}
+	
+	public static ICalendarService getInstance() {
+		if(calService == null) {
+			calService = new CalendarServiceImpl();
+		}
+		return calService;
+	}
+			
+	@Override
+	public int registCalendar(CalendarVO cv) {
+
+		return calDao.insertCalender(cv);
+	}
+
+	@Override
+	public boolean checkCalendar(int calNo) {
+	
+		return calDao.checkCalender(calNo);
+	}
+
+	@Override
+	public CalendarVO getCalendar(int calNo) {
+
+		return calDao.getCalendar(calNo);
+	}
+
+	@Override
+	public int modifyCalendar(CalendarVO cv) {
+		
+		return calDao.updateCalender(cv);
+	}
+
+	@Override
+	public int removeCalendar(int calNo) {
+
+		return calDao.deleteCalender(calNo);
+	}
+
+	@Override
+	public List<CalendarVO> listAllCalendar() {
+
+		return calDao.printAllCalendar();
+	}
+
+	@Override
+	public List<CalendarVO> searchCalendar(CalendarVO cv) {
+		
+		return calDao.searchCalendar(cv);
+	}
+}

@@ -1,0 +1,229 @@
+<%@page import="ment.vo.MentVO"%>
+<%@page import="java.util.List"%>
+<%@page import="board.vo.BoardVO"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@include file="/header.jsp"%>
+<%@include file="/memberSide.jsp"%>
+
+<%
+	String memId = (String) session.getAttribute("memId");
+System.out.println("로그인 아이디: " + memId);
+
+BoardVO bv = (BoardVO) request.getAttribute("bv");
+List<MentVO> mentList = (List<MentVO>) request.getAttribute("mentList");
+String cateCode = request.getParameter("cateCode");
+int boNo = Integer.parseInt(request.getParameter("boNo"));
+String roomCode = request.getParameter("roomCode");
+int roomMaster = Integer.parseInt((String.valueOf(request.getAttribute("roomMaster"))));
+
+System.out.println("jsp넘어온 cateCode: " + cateCode + ", boNo: " + boNo);
+System.out.println("jsp넘어온 roomCode: " + roomCode + ", 관리자여부: " + roomMaster);
+%>
+<!-- Start Banner Hero -->
+<div id="work_single_banner" class="bg-light w-100">
+	<div class="container-fluid text-light d-flex justify-content-center align-items-center border-0 rounded-0 p-0 py-5">
+		<div class="banner-content col-lg-8 m-lg-auto text-center py-5 px-3"></div>
+	</div>
+</div>
+<!-- End Banner Hero -->
+
+<!-- Start Work Sigle -->
+<section class="container py-5">
+
+	<div class="row pt-5"></div>
+	<!-- End Blog Cover -->
+
+	<div class="row justify-content-center pb-4">
+		<div class="col-lg-8">
+			<div class="WriterHeader">
+				<div class="WriterTitle">
+					<h3><%=bv.getBoTitle()%></h3>
+				</div>
+				<!-- 					<div class="ArticleTool" style="position: relative; left:75%; font-size:13px;"> -->
+				<div class="ArticleTool" style="display: flex; justify-content: flex-end;">
+					<%
+						System.out.println("(boardDetail)아이디: " + bv.getMemId());
+					if (memId != null && memId.equals(bv.getMemId())) {
+						System.out.println("게시글 번호 : " + bv.getBoNo() + ", 카테고리 코드 : " + bv.getCateCode());
+					%>
+					<a href="roomBoardModify.jsp?boNo=<%=boNo%>&cateCode=<%=cateCode%>&roomCode=<%=roomCode%>&roomMaster=<%=roomMaster%>">
+						<input type="button" value="수정하기 " style="padding-right: 10px; background: transparent; border: 0; font-weight: bold;">
+					</a>
+					<a href="deleteRoomBoard.do?boNo=<%=bv.getBoNo()%>&cateCode=<%=bv.getCateCode()%>&roomCode=<%=roomCode%>&roomMaster=<%=roomMaster%>">
+						|<input type="button" class="msg" value="삭제하기 " style="padding-right: 10px; background: transparent; border: 0; font-weight: bold;">
+					</a>
+					<%
+						} else {
+					%>
+					<input type="button" value="신고하기 " style="padding-right: 10px; background: transparent; border: 0; font-weight: bold;">
+					<%
+						}
+					%>
+				</div>
+			</div>
+			<div id="templatemo-slide-link-target" class="card mb-3"></div>
+			<%-- 					<p><%=bv.getMemNick() %> | 작성일 : <%=bv.getBoWriteDate() %> | 조회수 : <%=bv.getBoClickNum() %></p> --%>
+			<p><%=bv.getMemNick()%>
+				| 작성일 :
+				<%=bv.getBoWriteDate()%>
+				| 조회수 :
+				<%=bv.getBoClickNum()%></p>
+			<div class="worksingle-slide-footer row"></div>
+			<!--End Carousel Wrapper-->
+			<!-- 여기는 빈 공간 놔두기 -->
+			<!--Start Controls-->
+			<div class="col-1 align-self-center text-end"></div>
+			<!--End Controls-->
+
+		</div>
+	</div>
+	<!-- End Slider -->
+
+	<div class="row">
+		<div class="col-md-8 m-auto text-left justify-content-center">
+			<p class="pt-5 text-muted light-300">
+				<%=bv.getBoContents()%>
+			</p>
+		</div>
+	</div>
+	<!-- End Paragrph -->
+
+
+	<div class="row">
+		<div class="col-md-8 m-auto text-left justify-content-center"></div>
+	</div>
+	<!-- End Qute -->
+
+
+	<div class="row justify-content-center">
+		<div class="col-lg-8 ml-auto mr-auto pt-3 pb-4">
+			<a href="roomBoard.do?cateCode=<%=cateCode%>&roomCode=<%=roomCode%>&roomMaster=<%=roomMaster%>" style="margin: 95%;">
+				<input type="button" value="목록 " style="weidth: 20px; padding-right: 10px; background: transparent; border: 0; font-weight: bold;">
+			</a>
+			<hr>
+		</div>
+	</div>
+	<!-- End Work Sigle -->
+
+	<!-- -----------------------여기부터 댓글 영역------------------------------------------------------------------------------- -->
+	<!-- Start Comment -->
+	<div class="row justify-content-center">
+		<div class="worksingle-comment-heading col-8 m-auto pb-3">
+			<h4 class="h5">댓글</h4>
+		</div>
+	</div>
+
+	<div class="row pb-4">
+		<div class="worksingle-comment-body col-md-8 m-auto">
+			<div class="d-flex">
+				<div class="comment-body">
+					<%
+						int mentSize = mentList.size();
+					if (mentSize > 0) {
+						for (MentVO mv : mentList) {
+							System.out.println("회원 아이디: " + mv.getMemId() + ", 회원 닉네임 : " + mv.getMemNick());
+					%>
+					<div class="comment-header d-flex ms-3">
+						<div class="header text-start">
+							<!-- 								<h5 class="h6"><b style="padding-right:10px">회원아이디</b> 작성일</h5> -->
+							<h5 class="h6">
+								<b style="padding-right: 10px"><%=mv.getMemNick()%></b>
+								<%=mv.getMentCDate()%></h5>
+						</div>
+					</div>
+					<div class="footer">
+						<div class="card-body border ms-3 light-300" style="width: 850px;">
+							<%=mv.getMentContents()%>
+						</div>
+					</div>
+					<div style="text-align: end;">
+						<%
+							if (memId != null && memId.equals(mv.getMemId())) {
+						%>
+						<div style="text-align: end;">
+							<a>
+								<input type="button" value="수정하기 " onclick="modifyMent(this.id)" id="modify${i.count}" style="padding-right: 5px; padding-left: 450px; background: transparent; border: 0; font-weight: bold;">
+							</a>
+							<a href="../board/deleteMent.do?boNo=<%=mv.getBoNo()%>&cateCode=<%=mv.getCateCode()%>&mentNo=<%=mv.getMentNo()%>">
+								|<input type="button" class="msg" value="삭제하기 " style="padding-right: 0; background: transparent; border: 0; font-weight: bold;">
+							</a>
+							<%
+								} else {
+							%>
+							<input type="button" value="신고하기 " style="padding-right: 0; background: transparent; border: 0; font-weight: bold;">
+							<%
+								}
+							%>
+						</div>
+						
+						<%
+							} //for-end
+						} //if-end
+						%>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Comment -->
+
+		<div class="row pb-4">
+			<div class="worksingle-comment-footer col-lg-8 m-auto">
+				<h4 class="h5">댓글쓰기</h4>
+				<div class="form-group">
+
+					<form action="../board/insertMent.do?boNo=<%=boNo%>&cateCode=<%=cateCode%>" method="post">
+						<input type="text" name="mentContents" placeholder="댓글을 입력해주세요" class="form-control form-control-lg light-300" id="inputmessage" rows="5">
+						<div class="col-md-12 col-10 text-end">
+							<%
+								System.out.println("세션에 있는 회원 아이디:" + memId);
+							%>
+							<input type="hidden" name="cateCode" value="<%=cateCode%>"> <input type="hidden" name="boNo" value="<%=boNo%>"> <input class="btn btn-secondary text-white" type="submit" style="margin-top: 20px" value="등록">
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<!-- End Comment Form -->
+</section>
+<!-- End Work Sigle -->
+
+
+
+
+<%@include file="/footer.jsp"%>
+
+
+<!-- Bootstrap -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<!-- Load jQuery require for Page Script -->
+<script src="assets/js/jquery.min.js"></script>
+<!-- Page Script -->
+<script>
+	//서머노트 스크립트
+	// 		$('#summernote').summernote({
+	// 			lang : "ko-KR",
+	// 			tabsize : 2,
+	// 			height : 500
+	// 		});
+</script>
+<!-- Templatemo -->
+<script src="assets/js/templatemo.js"></script>
+<!-- Custom -->
+<script src="assets/js/custom.js"></script>
+
+<script>
+	$('.msg').on('click', function() {
+		let modifyBo = confirm("삭제하시겠습니까?")
+		if (modifyBo == true) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+</script>
+</body>
+
+</html>

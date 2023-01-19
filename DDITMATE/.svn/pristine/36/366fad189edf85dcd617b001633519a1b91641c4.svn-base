@@ -1,0 +1,441 @@
+<%@page import="ment.vo.MentVO"%>
+<%@page import="java.util.List"%>
+<%@page import="board.vo.BoardVO"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+   pageEncoding="UTF-8"%>
+   
+<%@include file="/header.jsp"%>
+<%
+String memId = (String)session.getAttribute("memId"); 
+System.out.println("로그인 아이디: " + memId);
+%>
+
+<% 
+	if(memId.equals("admin")){
+%>		
+	<%@include file="/manager/managerSide.jsp" %>
+<%
+	}else {
+%>
+	<%@include file="../memberSide.jsp" %>
+<%	
+	}
+%>
+
+<%
+BoardVO bv = (BoardVO)request.getAttribute("bv");
+List<MentVO> mentList = (List<MentVO>) request.getAttribute("mentList");
+String cateCode = request.getParameter("cateCode");
+int boNo = Integer.parseInt(request.getParameter("boNo"));
+
+// String req = (String) request.getAttribute("req");
+System.out.println("넘어온 cateCode: " + cateCode + ", boNo: " + boNo);
+
+// System.out.println(req + " 메소드 처리 완료");
+System.out.println("jsp로 넘어온 카테고리 코드: " + cateCode);
+
+// System.out.println("넘어온 댓글리스트: " + mentList);
+%>
+
+<!-- 모달창 스타일 -->
+<style>
+    #modal.modal-overlay {
+        z-index: 1000;
+        width: 100%;
+        height: 150%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(1.5px);
+        -webkit-backdrop-filter: blur(1.5px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);;
+
+    }
+    #modal .modal-window {
+        background: white;
+        border-radius: 10px;
+        border: 1px solid rgba( 255, 255, 255, 0.18 );
+        width: 400px;
+        height: 500px;
+        position: relative;
+        top: -100px;
+        padding: 10px;
+        border: 2px solid rgb(255, 226, 187);
+    }
+    #modal .title {
+        padding-left: 10px;
+        display: inline;
+        color: black;
+        
+    }
+    #modal .title h2 {
+        display: inline;
+    }
+    #modal .close-area {
+        display: inline;
+        float: right;
+        padding-right: 10px;
+        cursor: pointer;
+        color: black;
+    }
+    
+    #modal .content {
+        margin-top: 20px;
+        padding: 0px 10px;
+        color: black;
+    }
+
+</style>
+
+<script>
+$(document).ready(function(){
+   
+    //모달 버튼 스크립트
+    const modal = document.getElementById("modal");
+   $(".btn-blame").on('click', function(e){
+       modal.style.display = "flex"
+       
+       if(e.target.id == 'btnBlame'){
+          
+          $("#blame_category").val('bb1');
+          
+       }else{
+          
+          $("#blame_category").val('mb1');
+          $("#ment_no").val(e.target.id.substr(9));
+         
+       }
+   });
+    
+    const closeBtn = modal.querySelector(".close-area")
+    closeBtn.addEventListener("click", e => {
+    modal.style.display = "none"
+    });
+    modal.addEventListener("click", e => {
+    const evTarget = e.target
+    if(evTarget.classList.contains("modal-overlay")) {
+          modal.style.display = "none"
+       }
+    });
+    
+    
+    
+    
+    
+    
+
+});
+</script>
+
+   <!-- Start Banner Hero -->
+   <div id="work_single_banner" class="bg-light w-100">
+      <div
+         class="container-fluid text-light d-flex justify-content-center align-items-center border-0 rounded-0 p-0 py-5">
+         <div class="banner-content col-lg-8 m-lg-auto text-center py-5 px-3">
+
+         </div>
+      </div>
+   </div>
+   <!-- End Banner Hero -->
+
+   <!-- Start Work Sigle -->
+   <section >
+
+      <div class="row pt-5">
+      </div>
+      <!-- End Blog Cover -->
+
+      <div class="row justify-content-center pb-4">
+         <div class="col-lg-8">
+            <div class="WriterHeader">
+               <div class="WriterTitle" >
+                  <h3><%=bv.getBoTitle()%></h3>
+               </div>
+<!--                <div class="ArticleTool" style="position: relative; left:75%; font-size:13px;"> -->
+               <div class="ArticleTool" style="display: flex; justify-content: flex-end;">
+                  <%
+                     System.out.println("(boardDetail)아이디: " + bv.getMemId());   
+                     if(memId !=  null &&  memId.equals(bv.getMemId())){
+                     System.out.println("게시글 번호 : " + bv.getBoNo() + ", 카테고리 코드 : " + bv.getCateCode());
+                  %>
+                  <a href="boardModify.jsp?boNo=<%=boNo%>&cateCode=<%=cateCode%>">
+                     <input type="button" value="수정하기 " style="padding-right:10px;background: transparent;border: 0;font-weight: bold;">
+                  </a>
+                  <a href="deleteBoard.do?boNo=<%=bv.getBoNo()%>&cateCode=<%=bv.getCateCode()%>">
+                     |<input type="button" class="msg" value="삭제하기 " style="padding-right:10px;background: transparent;border: 0;font-weight: bold;">
+                  </a>
+                  <%
+                     }else{
+                  %>
+                  
+<!-- 버튼을 눌렀을 때 카테고리 넘버랑 게시글 번호 가지고 와야함  -->                  
+                  <input id="btnBlame" class="btn-blame" type="button" value="신고하기 " 
+                     style="padding-right:10px;background: transparent;border: 0;font-weight: bold;">
+                  
+<!-- 신고 모달 -->
+                  <form action="<%=request.getContextPath() %>/blame/insert.do" method="POST" class="joinForm">
+                  <div id="modal" class="modal-overlay">
+                      <div class="modal-window">
+                          <div class="title">
+                        <h5>신고사유를 입력하시오.</h5>
+                       </div>
+                       <div>                           
+                               <label for="taskId" class="col-form-label">신고내용</label>
+                               <input type="text" class="form-control" id="blame_contents" name="blaContents">
+                               <br>
+                               
+                               <input type="hidden" class="form-control" id="mem_id" name="memId" value="<%=bv.getMemId()%>">
+                           
+                               <input type="hidden" class="form-control" id="board_no" name="boNo" value="<%=bv.getBoNo()%>">
+                               
+                               <input type="hidden" class="form-control" id="ment_no" name="mentNo">
+                               
+                               <input type="hidden" class="form-control" id="category_code" name="cateCode" value="<%=bv.getCateCode()%>">
+                               
+                               
+                               
+                               <input type="hidden" class="form-control" id="blame_category" name="blaCate" value="bb1">
+                       </div>
+                       <div>
+                           <input type="submit" class="btn" value="확인">
+                           <button type="button" class="close-area">취소</button>
+                       </div> 
+                   </div>
+               </div>
+               </form>
+<!-- 신고 모달 -->
+                  <%
+                     }
+                  %>   
+               </div>
+            </div>
+               <div id="templatemo-slide-link-target" class="card mb-3">
+               </div>
+               <p><%=bv.getMemNick() %> | 작성일 : <%=bv.getBoWriteDate() %> | 조회수 : <%=bv.getBoClickNum()%></p>
+            <div class="worksingle-slide-footer row"></div>
+            <!--End Carousel Wrapper-->
+            <!-- 여기는 빈 공간 놔두기 -->
+            <!--Start Controls-->
+            <div class="col-1 align-self-center text-end"></div>
+            <!--End Controls-->
+
+         </div>
+      </div>
+      <!-- End Slider -->
+
+      <div class="row">
+         <div class="col-md-8 text-left justify-content-center" style="margin-left: 350px;">
+            <p class="pt-5 text-muted light-300">
+               <%=bv.getBoContents() %>
+            </p>
+         </div>
+      </div>
+      <!-- End Paragrph -->
+
+
+      <div class="row">
+         <div class="col-md-8 text-left justify-content-center">
+         </div>
+      </div>
+      <!-- End Qute -->
+
+
+      <div class="row justify-content-center">
+         <div class="col-lg-8 ml-auto mr-auto pt-3 pb-4">
+            <a href="listBoard.do?cateCode=<%=cateCode%>" style="margin:95%;">
+               <input type="button" value="목록 " 
+                     style=" weidth:20px; padding-right:10px; background: transparent; border: 0; font-weight: bold;">
+            </a>
+         <hr>
+         </div>
+      </div>
+      <!-- End Work Sigle -->
+      
+      <!-- -----------------------여기부터 댓글 영역------------------------------------------------------------------------------- -->
+      <!-- Start Comment -->
+      <div class="row justify-content-center">
+         <div class="worksingle-comment-heading col-8 m-auto pb-3">
+            <h4 class="h5">댓글</h4>
+         </div>
+      </div>
+
+      <div class="row pb-4">
+         <div class="worksingle-comment-body col-md-8 m-auto">
+<!--             <div class="d-flex"> -->
+            <div>
+               <div class="comment-body">
+               <%
+                   int mentSize = mentList.size(); 
+                   if(mentSize > 0){ 
+                   
+                      for(MentVO mv : mentList){ 
+                         System.out.println("회원 아이디: " + mv.getMemId() + ", 회원 닉네임 : " + mv.getMemNick());
+                        
+                %> 
+                  <div class="comment-header d-flex ms-3">
+                     <div class="header text-start">
+                        <h5 class="h6"><b style="padding-right:10px"><%=mv.getMemNick() %></b> <%=mv.getMentCDate() %></h5>
+                     </div>
+                  </div>
+                  <div class="comment-new" style="text-align:end;" id="<%=mv.getMentNo()%>">
+                     <%
+                            if(memId !=  null &&  memId.equals(mv.getMemId())){ 
+//                            System.out.println("게시글 번호 : " + bv.getBoNo() + ", 카테고리 코드 : " + bv.getCateCode());
+                     %>
+                     <div style="text-align:end;">
+                        <a>
+                           <input type="button" value="수정하기 " class="modify-ment" id="modify-ment"
+                                  style="padding-right:5px;padding-left:450px; background: transparent;border: 0;font-weight: bold;">
+                        </a>
+                        <a href="deleteMent.do?boNo=<%=mv.getBoNo()%>&cateCode=<%=mv.getCateCode()%>&mentNo=<%=mv.getMentNo()%>">
+                           |<input type="button" class="msg" value="삭제하기 " style="padding-right:0;background: transparent;border: 0;font-weight: bold;">
+                        </a>
+                     <%
+                         }else{
+                     %>
+                           <!-- 댓글신고버튼 -->
+                        <input id="btnBlame_<%=mv.getMentNo()%>" class="btn-blame" type="button" value="신고하기 "  style="padding-right:0; background: transparent;border: 0;font-weight: bold;">
+                           <!-- 신고 모달 사라짐-->
+                     <%
+                        }
+                     %>   
+                     </div>
+
+                     <div class="footer" id="<%=mv.getMentNo()%>">
+                        <div class="card-body ms-3 light-300" id="<%=mv.getMentNo()%>" style="width:1000px; text-align:left; border:0;">
+                           <%=mv.getMentContents() %>
+                           <br>
+                        <div class="comment-hidden" style="display:none;">
+                              <div class="cmt-contents" style="margin-top:20px;">
+                                 <h5>댓글수정</h5>
+                                 <input type="text" placeholder="<%=mv.getMentContents() %>" style="margin-top:10px; height:100px; width:1000px;" 
+                                       class="form-control form-control-lg light-300" id="cmt-mm_<%=mv.getMentNo()%>">
+                              </div>
+                              <div style=" text-align: end;">
+                                 <button id="closed-modify" class="fix-CmtBtn" style="background: transparent;border: 0;font-weight: bold;">취소</button>
+                                 <button id="modify-ment_<%=mv.getMentNo()%>" data-ment-no="<%=mv.getMentNo() %>" data-board-no="<%=mv.getBoNo() %>" data-cate-code="<%=mv.getCateCode() %>" class="modify-cls" style="background: transparent;border: 0;font-weight: bold;">수정하기</button>
+                              </div>
+                        </div>
+                        </div>
+                           <hr>
+                     </div>
+   <!--                      </div> -->
+                  </div> <!-- cmt-new -->
+                     <%
+                        } //for-end
+                     } //if-end
+                     
+                      %> 
+
+                  </div>
+         </div>
+      <!-- End Comment -->
+
+      <div class="row pb-4" style="margin-top:20px;">
+         <div class="worksingle-comment-footer" style="width:1300px; margin:auto; padding-left: 20px">
+            <h4 class="h5">댓글쓰기</h4>
+            <div class="form-group">
+               
+               <form action="insertMent.do?boNo=<%=boNo %>&cateCode=<%=cateCode %>" method="post">
+                  <input type="text" name="mentContents" placeholder="댓글을 입력해주세요" style="height:200px"
+                        class="form-control form-control-lg light-300" id="inputmessage"  rows="5" >
+                  <div class="col-md-12 col-10 text-end">
+                  <%System.out.println("세션에 있는 회원 아이디:" + memId); %>
+                     <input type="hidden" name="cateCode" value="<%=cateCode%>">
+                     <input type="hidden" name="boNo" value="<%=boNo%>">
+                     <input class="btn btn-secondary text-white" type="submit" style="margin-top:20px" value="등록" >
+                  </div>
+               </form>
+               
+            </div>
+         </div>
+      </div>
+      </div>
+   </div>
+      <!-- End Comment Form -->
+
+
+   </section>
+   <!-- End Work Sigle -->
+
+   
+
+
+<%@include file="/footer.jsp" %>
+
+
+   <!-- Bootstrap -->
+   <script src="assets/js/bootstrap.bundle.min.js"></script>
+   <!-- Load jQuery require for Page Script -->
+   <script src="assets/js/jquery.min.js"></script>
+   <!-- Page Script -->
+   <!-- Templatemo -->
+   <script src="assets/js/templatemo.js"></script>
+   <!-- Custom -->
+   <script src="assets/js/custom.js"></script>
+
+<script>
+$('.msg').on('click',function(){
+     let modifyBo = confirm("삭제하시겠습니까?")
+     if(modifyBo == true){
+        return true;
+     }
+     else{
+        return false;
+     }
+
+});
+
+
+$('.modify-ment').click(function(){
+   console.log($(this).parents('.comment-new').attr('id'));
+   $(this).parents('.comment-new').find('.comment-hidden').attr('style','display: block');
+   
+   
+});   
+
+//취소를 눌렀을때 창 닫기!! -> 이건 보류
+$('.closed-modify').click(function(){
+// 	console.log($(this).parents('.comment-hidden').attr('id'));
+	$(this).parents('.comment-hidden').attr('style','display: hidden');
+});
+
+$('.modify-cls').click(function(){
+   const btn = this;
+   
+   $.ajax({
+      type: 'post',
+      url: './updateMent.do',//json
+      data: { mentContent: $('#cmt-mm_' + btn.dataset.mentNo).val() ,
+              boNo : btn.dataset.boardNo,
+               mentNo : btn.dataset.mentNo,
+              cateCode : btn.dataset.cateCode},
+              
+              success: function(result){ 
+               console.log(result);
+               alert("댓글이 수정되었습니다.");
+               location.reload();
+//                opener.reload();
+               
+            },
+      error: function(xhr){
+            alert("상태" + xhr.status);
+         },
+      dataType: 'json'//응답데이터의 형식 지정      
+   })
+});
+
+
+</script>
+
+
+</body>
+
+</html>

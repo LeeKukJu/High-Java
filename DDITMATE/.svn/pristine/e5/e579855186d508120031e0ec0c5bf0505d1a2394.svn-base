@@ -1,0 +1,38 @@
+package blame.controller;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import blame.service.BlameServiceImpl;
+import blame.service.IBlameService;
+import blame.vo.BlameVO;
+
+@WebServlet("/blame/mentDelete.do")
+public class DeleteMentBlameController extends HttpServlet{
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+
+		HttpSession session = req.getSession();
+		
+
+		int blaNo = Integer.parseInt(req.getParameter("blaNo"));
+		IBlameService blaService = BlameServiceImpl.getInstance();
+		
+		int cnt = blaService.removeBlame(blaNo);
+
+		resp.sendRedirect("/DDITMATE/blame/mentBlame.do");
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doGet(req, resp);
+	}
+	
+}

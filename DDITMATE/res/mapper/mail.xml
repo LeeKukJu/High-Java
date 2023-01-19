@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mail">
+
+	
+<!-- 쪽지 삭제하기 -->
+	<delete id="deleteMail" parameterType="int">
+		delete from mail
+		where mail_no = #{mailNo}
+	</delete>
+	
+	<resultMap type="mailVO" id="mailMap">
+	
+		<result column="mail_no" property="mailNo"/>
+		<result column="mail_sender" property="mailSender"/>
+		<result column="mail_receiver" property="mailReceiver"/>
+		<result column="mail_date" property="mailDate"/>
+		<result column="mail_contents" property="mailCon"/>
+
+	</resultMap>
+
+ 	<!-- 쪽지보내기 -->
+	<insert id="insertMail" parameterType="mailVO" >
+		insert into mail (mail_no, mail_sender, mail_receiver, mail_date, mail_contents)
+		values ((mail_num_seq.nextVal), #{mailSender}, #{mailReceiver}, sysdate , #{mailCon})
+	</insert>
+	
+	<!-- 받은 쪽지함 리스트 -->
+	<select id="receiveAllList" resultMap="mailMap" parameterType="String">
+		select mail_no, mail_contents, mail_sender, mail_date 
+		from mail
+		where mail_receiver = #{memId}
+	</select>
+	
+	<!-- 보낸 쪽지함 리스트 -->
+	<select id="sendAllList" resultMap="mailMap" parameterType="String">
+		select mail_no, mail_contents, mail_receiver, mail_date
+		from mail
+		where mail_sender = #{memId}
+	</select>
+	
+	<select id="getMail" resultMap="mailMap">
+		select mail_no, mail_sender, mail_receiver, mail_date,  mail_contents 
+		from mail
+		where mail_no = #{mailNo}
+	</select>
+	
+
+
+</mapper>

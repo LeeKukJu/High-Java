@@ -1,0 +1,30 @@
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Statement"%>
+<%@page import="java.sql.Connection"%>
+<%@page import="java.sql.DriverManager"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<%
+	String uId = request.getParameter("uId");
+Class.forName("oracle.jdbc.driver.OracleDriver");
+String url = "jdbc:oracle:thin:@112.220.114.130:1521:xe";
+Connection conn = DriverManager.getConnection(url, "team5_202210M", "java");
+//5. sql구문 실행을 위한 Statement 객체 생성
+Statement stmt = conn.createStatement();
+String sql = "select mem_id from member " + " where mem_id= '" + uId + "'" ;
+ResultSet rs = stmt.executeQuery(sql);
+if (rs.next()) {
+	//json데이터로 결과 있음 코드 반환하기
+%>
+{"rst":"fail", "msg": "이미 사용중인 아이디 입니다." }
+<%
+	} else {
+//json데이터로 결과없음 코드 반환하기
+%>
+{"rst":"ok", "msg": "사용 가능한 아이디입니다." }
+<%
+	}
+%>
+
+

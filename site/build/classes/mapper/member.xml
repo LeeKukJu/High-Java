@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="member"> <!-- IBatis는 namespace가 필수 항목(package와 같은 역할) -->
+  	<select id="loginChk" parameterType="map" resultType="String">
+  		select mem_id 
+  		  from member
+		 where mem_Id = #{uId}
+		   and mem_pass = #{uPw}
+  	</select>
+  
+  </mapper>

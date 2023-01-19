@@ -21,7 +21,16 @@
 
 	<typeAliases>
 		<typeAlias type="member.vo.MemberVO" alias="memberVO" />
-		<typeAlias type="common.vo.AtchFileVO" alias="AFVO" />
+		<typeAlias type="member.vo.PictureVO" alias="pictureVO" />
+		<typeAlias type="board.vo.BoardVO" alias="boardVO" />
+		<typeAlias type="common.vo.FileVO" alias="fileVO" />
+		<typeAlias type="mail.vo.MailVO" alias="mailVO" />
+		<typeAlias type="room.vo.RoomVO" alias="roomVO" />
+		<typeAlias type="room.vo.RoomMemberVO" alias="roomMemberVO" />
+		<typeAlias type="ment.vo.MentVO" alias="mentVO" />
+		<typeAlias type="room.vo.RoomBoardVO" alias="roomBoardVO" />
+
+<!-- 		<typeAlias type="common.vo.AtchFileVO" alias="AFVO" /> -->
 	</typeAliases>
 
 	<environments default="dev">
@@ -40,6 +49,12 @@
 	</environments>
 	<mappers>
 		<mapper resource="mapper/member.xml" />
+		<mapper resource="mapper/board.xml" />
+		<mapper resource="mapper/calendar.xml" />
 		<mapper resource="mapper/atchFile.xml" />
+		<mapper resource="mapper/mail.xml" />
+		<mapper resource="mapper/ment.xml" />
+		<mapper resource="mapper/room.xml" />
+		<mapper resource="mapper/blame.xml" />
 	</mappers>
 </configuration>

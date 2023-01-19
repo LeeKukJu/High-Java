@@ -1,7 +1,0 @@
-package kr.or.ddit.basic;
-
-public class soraTest {
-	public static void main(String[] args) {
-		System.out.println("보이시나요");
-	}
-}

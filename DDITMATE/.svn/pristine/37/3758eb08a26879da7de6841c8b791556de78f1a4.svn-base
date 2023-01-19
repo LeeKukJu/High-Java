@@ -1,0 +1,105 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%@include file="/header.jsp"%>
+
+<%	String memId = (String)session.getAttribute("memId"); 
+	System.out.println("로그인 아이디: " + memId);
+%>
+<% 
+	if(memId.equals("admin")){
+%>		
+	<%@include file="/manager/managerSide.jsp" %>
+<%
+	}else {
+%>
+	<%@include file="/memberSide.jsp" %>
+<%	
+	}
+%>
+
+         <div class="container-lg py-5">
+            <div class="container">
+               <!--          <div class="row"> -->
+               <div class="col-lg-6 mx-auto my-4 p-3">
+                  <form action="#" method="get">
+                     <div class="input-group py-3">
+
+                     </div>
+                  </form>
+               </div>
+            </div>
+            <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////배너, 검색 끝 -->
+
+            <!-- /////////////////////////////////////////////////게시판 테이블 시작///////////////////////////////////////////////////////////////////////////// -->
+
+
+            <div class="row px-lg-3">
+               <!--    검색창 아래 게시판 위 div         <div class="container mt-3"> -->
+               <div class="card">
+
+                  <div class="card-header" style="text-align:center;">
+                  		<h4>신고 댓글 관리
+                  		<button class="btn btn-primary float-end btn-sm" type="submit">
+                        	삭제하기
+                        </button>
+                  		</h4>
+                  </div>
+
+                  <div class="card-body">
+                     <div class="container mt-3">
+                        <table class="table table-striped">
+
+                           <thead>
+                              <tr>
+                                 <th style="background-color: #eeeeee; text-align: center;">신고번호</th>
+                                 <th style="background-color: #eeeeee; text-align: center;">카테고리번호</th>
+                                 <th style="background-color: #eeeeee; text-align: center;">댓글번호</th>
+                                 <th style="background-color: #eeeeee; text-align: center;">아이디</th>
+                                 <th style="background-color: #eeeeee; text-align: center;">신고내용</th>
+                                 <th style="background-color: #eeeeee; text-align: center;">신고일시</th>
+                                 <th style="background-color: #eeeeee; text-align: center;">삭제하기</th>
+                              </tr>
+                           </thead>
+
+                           <tbody>
+                              <tr style="text-align: center;">
+                                 <td>14</td>
+                                 <td>1</td>
+                                 <td>23</td>
+                                 <td>김대덕</td>
+                                 <td>댓글이 마음에 안들어요</td>
+                                 <td>2023.01.05</td>
+                                 <td>
+                                 	<input type="checkbox">
+<!--                                     <button class="btn btn-primary float-center btn-sm" type="submit"> -->
+<!--                         				회원탈퇴 -->
+<!--                         			</button> -->
+                                 </td>
+                                 
+                              </tr>
+                              
+                           </tbody>
+                        </table>
+
+                     </div>
+                  </div>
+                  <div class="card-footer"></div>
+
+               </div> <!-- class="card" -->
+
+               <!--             </div> 검색창 아래 게시판 위 div-->
+            </div>
+         </div>
+
+
+
+      
+         <!-- End Content -->
+
+
+         <section class="container py-5">
+
+         </section>
+
+
+<%@include file="/footer.jsp" %>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ment">
+	<resultMap type="mentVO" id="mentMap">
+		<result column="ment_no" property="mentNo" />
+		<result column="board_no" property="boNo" />
+		<result column="category_code" property="cateCode" />
+		<result column="mem_id" property="memId" />
+		<result column="ment_contents" property="mentContents" />
+		<result column="ment_cdate" property="mentCDate" />
+		<result column="ment_mdate" property="mentMDate" />
+		<result column="ment_parent" property="mentParent" />
+		<result column="board_title" property="boTitle" />
+		<result column="CATEGORY_NAME" property="cateName" />
+	</resultMap>
+
+	<insert id="insertMent" parameterType="mentVO">
+		INSERT INTO MENT
+		(Ment_No,Board_No,Category_Code,Mem_Id,Ment_Contents,Ment_Cdate,Ment_Mdate)
+		VALUES (Ment_No_Seq.Nextval,#{boNo},#{cateCode}, #{memId},
+		#{mentContents}, Sysdate, Sysdate)
+	</insert>
+
+	<select id="selectMent" parameterType="String"
+		resultMap="mentMap">
+		SELECT A.MENT_NO,
+		A.BOARD_NO,
+		A.CATEGORY_CODE,
+		A.MEM_ID,
+		A.MENT_CONTENTS,
+		A.MENT_CDATE,
+		B.MEM_NICK
+		FROM MENT A, MEMBER B
+		WHERE
+		A.MEM_ID = B.MEM_ID
+		AND A.BOARD_NO = #{boNo}
+		AND A.CATEGORY_CODE =
+		#{cateCode}
+	</select>
+
+	<update id="updateMent" parameterType="mentVO">
+		UPDATE MENT
+		SET
+		MENT_CONTENTS = #{mentContents},
+		MENT_MDATE = sysdate
+		WHERE MENT_NO =
+		#{mentNo}
+		AND BOARD_NO = #{boNo}
+		AND CATEGORY_CODE = #{cateCode}
+	</update>
+
+	<delete id="deleteMent" parameterType="mentVO">
+		DELETE FROM MENT
+		WHERE
+		MENT_NO = #{mentNo}
+		AND BOARD_NO = #{boNo}
+		AND CATEGORY_CODE =
+		#{cateCode}
+	</delete>
+
+	<select id="listMyMent" parameterType="mentVO"
+		resultMap="mentMap">
+		<!-- 내가 작성한 댓글 목록 조회할 때 사용 -->
+		SELECT
+		m.board_no,
+		m.category_code,
+		m.mem_id,
+		m.ment_contents,
+		m.ment_cdate,
+		m.ment_mdate,
+		b.board_title,
+		bc.CATEGORY_NAME
+		FROM ment m, board b, BOARD_CATEGORY bc
+		where m.board_no = b.board_no
+		and m.CATEGORY_CODE = b.CATEGORY_CODE
+		and b.CATEGORY_CODE = bc.CATEGORY_CODE
+		and m.mem_id = #{memId}
+	</select>
+
+</mapper>

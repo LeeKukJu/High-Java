@@ -1,0 +1,90 @@
+package login.controller;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import member.service.IMemberService;
+import member.service.MemberServiceImpl;
+import member.vo.MemberVO;
+
+@WebServlet("/member/login.do")
+public class LoginController extends HttpServlet {
+   
+   @Override
+   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+   }
+
+   @Override
+   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+      // 요청 파라미터 정보 가져오기
+      String memId = req.getParameter("memId");
+      String memPw = req.getParameter("memPw");
+
+      // 서비스 객체 생성
+      IMemberService memService = MemberServiceImpl.getInstance();
+
+      // 회원가입 유무확인
+      boolean memCheck = memService.checkMember(memId);
+      
+      System.out.println("memId: " + memId);
+      System.out.println("memPw: " + memPw);
+      System.out.println("memCheck: " + memCheck);
+      
+      // 세션 객체 생성
+      HttpSession session = req.getSession();
+      
+      if (memCheck) { // 회원가입 기록 확인 되면
+         // 아이디 비밀번호 일치 확인 확인
+         MemberVO mv = new MemberVO();
+         mv = memService.getMember(memId);
+         
+         if(memId.equals(mv.getMemId()) && memPw.equals(mv.getMemPw())) {
+
+            String okMsg = mv.getMemName() + "님 로그인 완료!";
+            
+            session.setAttribute("memId", memId);
+            session.setAttribute("okMsg", okMsg);
+            resp.sendRedirect("./../main.jsp");
+            
+         }else {
+        	 String msg = "비밀번호가 일치하지 않습니다.";
+             String text = "비밀번호를 확인 해주세요.";
+             String icon = "error";
+             
+             session.setAttribute("msg", msg);
+             session.setAttribute("text", text);
+             session.setAttribute("icon", icon);
+             
+             resp.sendRedirect("login.jsp");
+         }
+
+      } else {
+         String msg = "일치하는 회원이 없습니다.";
+         String text = "회원가입을 진행해주세요.";
+         String icon = "error";
+         
+         session.setAttribute("msg", msg);
+         session.setAttribute("text", text);
+         session.setAttribute("icon", icon);
+         
+         resp.sendRedirect("login.jsp");
+      }
+
+//      if(memCheck) { // 로그인 성공 memCheck = true
+//         System.out.println("로그인 성공!");
+//      }else { // 로그인 실패
+//         System.out.println("로그인 실패!");
+//         
+//         
+//      }
+
+   }
+
+}

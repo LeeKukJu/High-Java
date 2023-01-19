@@ -1,0 +1,45 @@
+package ment.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import ment.vo.MentVO;
+
+public interface IMentDao {
+
+	/**
+	 * DB에 존재하는 모든 댓글을 조회하기 위한 메소드
+	 * @return 모든 댓글정보를 담은 list객체
+	 */
+	public List<MentVO> listAllMent(MentVO mv);
+	
+	public List<MentVO> listMent(Map<String, String> param);
+	
+	/**
+	 * 게시글에 해당하는 댓글 전체 글 수를 반환하는 메소드
+	 * @param param
+	 * @return 게시글에 해당하는 전체 댓글 수
+	 */
+	public int selectMent(Map<String, Object> param);
+	
+	/**
+	 * 댓글을 작성하기 위한 메소드
+	 * @param mv
+	 * @return
+	 */
+	public int insertMent(MentVO mv);
+	
+	/**
+	 * 댓글을 수정하기 위한 메소드
+	 * @param mv
+	 * @return
+	 */
+	public int updateMent(MentVO mv);
+	
+	/**
+	 * 댓글을 삭제하기 위한 메소드
+	 * @param mv
+	 * @return
+	 */
+	public int deleteMent(MentVO mv);
+}

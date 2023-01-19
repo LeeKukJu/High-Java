@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="calendar">
+  <resultMap type="calendar.vo.CalendarVO" id="calMap">
+    <result column="CALENDAR_NO" property="calNo" />
+    <result column="ROOM_CODE" property="roomCode" />
+    <result column="CALENDAR_TITLE" property="calTitle" />
+    <result column="CALENDAR_MEMO" property="calMemo"  />
+    <result column="CALENDAR_START" property="calStart" />
+    <result column="CALENDAR_END" property="calEnd" />
+  </resultMap>
+  	
+	<select id="calendarList" parameterType="String" resultMap="calMap">
+		select * from calendar
+		where room_code = #{roomCode} 
+	</select>
+	
+	<insert id="insertCalendar" parameterType="calendar.vo.CalendarVO">
+		<selectKey keyProperty="calNo" resultType="int" order="BEFORE">
+			select CALENDAR_NO_SEQ.NEXTVAL from dual
+		</selectKey>
+	
+		INSERT INTO calendar
+		( calendar_no, room_code, calendar_title, calendar_memo, calendar_start, calendar_end)
+		values (#{calNo}, #{roomCode}, #{calTitle}, #{calMemo}, #{calStart}, #{calEnd})		
+	</insert>
+	
+	<update id="updateCalendar" parameterType="calendar.vo.CalendarVO">
+		UPDATE calendar
+		SET calendar_title = #{calTitle}, 
+		calendar_memo = #{calMemo},
+		calendar_start = #{calStart},
+		calendar_end = #{calEnd}
+		WHERE calendar_no = #{calNo}
+	</update>
+	
+	<delete id="deleteCalendar" parameterType="int">
+		DELETE from calendar
+		WHERE calendar_no = #{calNo}
+	</delete>
+	
+	<select id="getCalendar" parameterType="int" resultMap="calMap">
+		select * from calendar
+		where calendar_no = #{calNo}
+	</select>
+ 	
+	<select id="checkCalendar" parameterType="int" resultMap="calMap">
+		select count(*) as cnt from calendar
+		where calendar_no = #{calNo}
+	</select>
+	
+	<select id="searchCalendar" resultMap="calMap">
+		select * from calendar where 1=1
+		
+		<if test="calNo != null and calNo != ''">
+			and calendar_no = #{calNo}
+		</if>
+	</select>
+	
+</mapper>
